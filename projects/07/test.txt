@@ -1,0 +1,6 @@
+this is a very
+long string
+that spans
+several lines
+
+ this is a new line
