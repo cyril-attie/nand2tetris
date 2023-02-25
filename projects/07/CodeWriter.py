@@ -3,25 +3,26 @@
 class CodeWriter:
     def __init__(self, filePath):
         self.f = open(filePath,'w')
+        self.comparisonCounter=0
 
     def writeArithmetic(self, command):
-        helperArithmetic2Args = '@SP\nD=M-1\n'
+        if command in ('eq','gt','lt'):
+            self.comparisonCounter += 1
+        helperArithmetic2Args = lambda operationTemplate: '@SP\nA=M-1\nD=M\nA=A-1\n{operationTemplate}M=D\n@SP\nM=M-1'
         commandTemplateFor = {
-                'add': f'@SP\nA=M-1\n',
-                'sub': f'',
-                'eq': f'',
-                'gt': f'',
+                'add': helperArithmetic2Args(f'D=D+M\n'),
+                'sub': helperArithmetic2Args(f'D=D-M\n'),
+                'eq': f'D=D-M\nM=0\nD;JNE\n(FALSE)\n',
+                'gt': f'D=D+M\n',
                 'lt': f'',
-                'and': f'',
-                'or': f'',
-                'not': f'',
-                'neg': f'',
+                'and': helperArithmetic2Args(f'D=D&M\n'),
+                'or': helperArithmetic2Args(f'D=D|M\n'),
+                'not': f'@SP\nA=M-1\nM=!M\n',
+                'neg': f'@SP\nA=M-1\nM=-M\n',
                 }
         assemblyResult = f'''
         //{command}
         {commandTemtplateFor[command]}
-        @SP
-        M=M-1
         '''
 
     def writePushPop(self, command, segment, index):
