@@ -1,11 +1,20 @@
+"""Translates a parser VM command into Hack assembly code.
 
+Exposes the CodeWriter class that receives a file path and writes a file.  
+The new file contains Hack assembly code. 
+"""
 
 class CodeWriter:
+    """Writes Hack assembly .asm commands to a file.
+    """
     def __init__(self, filePath):
+        """Opens the .asm file. 
+        """
         self.f = open(filePath,'w')
         self.comparisonCounter=0
 
     def writeArithmetic(self, command):
+         
         if command in ('eq','gt','lt'):
             self.comparisonCounter += 1
         helperArithmetic2Args = lambda operationTemplate: '@SP\nA=M-1\nD=M\nA=A-1\n{operationTemplate}M=D\n@SP\nM=M-1'
